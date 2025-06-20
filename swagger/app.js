@@ -14,6 +14,7 @@ var config = {
       var validApiKey = process.env.API_KEY || 'my_key';
       
       // 요청 헤더 값이 api_key 이고, 값이 유효한 키일 경우에만 실행을 허용한다
+      // API 키를 검증해서 올바른 키면 콜백을 실행하고, 아니면 에러를 콜백으로 넘기는 로직
       if (validApiKey === scopesOrApiKey) {
         cb();
       } else {
