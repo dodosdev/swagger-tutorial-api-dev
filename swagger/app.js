@@ -9,12 +9,15 @@ module.exports = app; // for testing
 var config = {
   appRoot: __dirname, // required config
   swaggerSecurityHandlers: {
-  api_key: function (req, authOrSecDef, scopesOrApiKey, cd) {
-   // 요청 헤더 값이 api_key 이고, 값이 'my_key'일 경우에만 실행을 허용한다
-    if ('my_key' === scopesOrApiKey) {
-        cd();
+    api_key: function (req, authOrSecDef, scopesOrApiKey, cb) {
+      // 환경변수를 사용하거나 기본값 설정
+      var validApiKey = process.env.API_KEY || 'my_key';
+      
+      // 요청 헤더 값이 api_key 이고, 값이 유효한 키일 경우에만 실행을 허용한다
+      if (validApiKey === scopesOrApiKey) {
+        cb();
       } else {
-        cd(new Error('Access Denied'));
+        cb(new Error('Access Denied'));
       }
     }
   }
@@ -31,6 +34,8 @@ SwaggerExpress.create(config, function(err, swaggerExpress) {
   var port = process.env.PORT || 10010;
   app.listen(port);
 
+  console.log('Server started on port:', port);
+  
   if (swaggerExpress.runner.swagger.paths['/hello']) {
     console.log('try this:\ncurl http://127.0.0.1:' + port + '/hello?name=Scott');
   }
